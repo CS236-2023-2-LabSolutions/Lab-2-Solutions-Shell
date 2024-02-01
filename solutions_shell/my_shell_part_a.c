@@ -10,36 +10,36 @@
 #define MAX_NUM_TOKENS 64
 
 /* Splits the string by space and returns the array of tokens
-*
-*/
+ *
+ */
 char **tokenize(char *line)
 {
-  char **tokens = (char **)malloc(MAX_NUM_TOKENS * sizeof(char *));
-  char *token = (char *)malloc(MAX_TOKEN_SIZE * sizeof(char));
-  
-  memset(tokens,0,sizeof(tokens)); // Initializing to NULL to check if tokens are empty
+	char **tokens = (char **)malloc(MAX_NUM_TOKENS * sizeof(char *));
+	char *token = (char *)malloc(MAX_TOKEN_SIZE * sizeof(char));
 
-  int i, tokenIndex = 0, tokenNo = 0;
+	memset(tokens,0,sizeof(tokens)); // Initializing to NULL to check if tokens are empty
 
-  for(i =0; i < strlen(line); i++){
+	int i, tokenIndex = 0, tokenNo = 0;
 
-    char readChar = line[i];
+	for(i =0; i < strlen(line); i++){
 
-    if (readChar == ' ' || readChar == '\n' || readChar == '\t'){
-      token[tokenIndex] = '\0';
-      if (tokenIndex != 0){
-	tokens[tokenNo] = (char*)malloc(MAX_TOKEN_SIZE*sizeof(char));
-	strcpy(tokens[tokenNo++], token);
-	tokenIndex = 0; 
-      }
-    } else {
-      token[tokenIndex++] = readChar;
-    }
-  }
- 
-  free(token);
-  tokens[tokenNo] = NULL ;
-  return tokens;
+		char readChar = line[i];
+
+		if (readChar == ' ' || readChar == '\n' || readChar == '\t'){
+			token[tokenIndex] = '\0';
+			if (tokenIndex != 0){
+				tokens[tokenNo] = (char*)malloc(MAX_TOKEN_SIZE*sizeof(char));
+				strcpy(tokens[tokenNo++], token);
+				tokenIndex = 0; 
+			}
+		} else {
+			token[tokenIndex++] = readChar;
+		}
+	}
+
+	free(token);
+	tokens[tokenNo] = NULL ;
+	return tokens;
 }
 
 void free_mem(char **tokens){
@@ -74,13 +74,13 @@ int main(int argc, char* argv[]) {
 		if(!tokens[0]){
 			continue;
 		}
-   
+
 		if(strcmp(tokens[0],"cd")){
-			
+
 			// Treat cd commands differently
 			// Use strcmp to compare strings since normal comparision wouldn't work as "cd" and tokens[0] 
 			// have different sizes
-			
+
 			if(fork()==0){
 
 				// execvp is used as commands have to be looked for in Path
@@ -114,7 +114,7 @@ int main(int argc, char* argv[]) {
 				}
 			}
 		}
-       
+
 		// Freeing the allocated memory	
 		free_mem(tokens);
 

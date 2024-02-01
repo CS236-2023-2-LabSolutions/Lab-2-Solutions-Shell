@@ -11,36 +11,36 @@
 #define MAX_NUM_TOKENS 64
 
 /* Splits the string by space and returns the array of tokens
-*
-*/
+ *
+ */
 char **tokenize(char *line)
 {
-  char **tokens = (char **)malloc(MAX_NUM_TOKENS * sizeof(char *));
-  char *token = (char *)malloc(MAX_TOKEN_SIZE * sizeof(char));
-  
-  memset(tokens,0,sizeof(tokens)); // Initializing to NULL to check if tokens are empty
+	char **tokens = (char **)malloc(MAX_NUM_TOKENS * sizeof(char *));
+	char *token = (char *)malloc(MAX_TOKEN_SIZE * sizeof(char));
 
-  int i, tokenIndex = 0, tokenNo = 0;
+	memset(tokens,0,sizeof(tokens)); // Initializing to NULL to check if tokens are empty
 
-  for(i =0; i < strlen(line); i++){
+	int i, tokenIndex = 0, tokenNo = 0;
 
-    char readChar = line[i];
+	for(i =0; i < strlen(line); i++){
 
-    if (readChar == ' ' || readChar == '\n' || readChar == '\t'){
-      token[tokenIndex] = '\0';
-      if (tokenIndex != 0){
-	tokens[tokenNo] = (char*)malloc(MAX_TOKEN_SIZE*sizeof(char));
-	strcpy(tokens[tokenNo++], token);
-	tokenIndex = 0; 
-      }
-    } else {
-      token[tokenIndex++] = readChar;
-    }
-  }
- 
-  free(token);
-  tokens[tokenNo] = NULL ;
-  return tokens;
+		char readChar = line[i];
+
+		if (readChar == ' ' || readChar == '\n' || readChar == '\t'){
+			token[tokenIndex] = '\0';
+			if (tokenIndex != 0){
+				tokens[tokenNo] = (char*)malloc(MAX_TOKEN_SIZE*sizeof(char));
+				strcpy(tokens[tokenNo++], token);
+				tokenIndex = 0; 
+			}
+		} else {
+			token[tokenIndex++] = readChar;
+		}
+	}
+
+	free(token);
+	tokens[tokenNo] = NULL ;
+	return tokens;
 }
 
 void free_mem(char **tokens){
@@ -57,11 +57,11 @@ int back_pgid=-1; //Background process pgid
 
 void signal_handler(int sig){
 
-    if(fore_pgid==-1){
-        return;
-    }
-    
-    kill(-fore_pgid,SIGTERM); // Kill all processes in the foreground process group id
+	if(fore_pgid==-1){
+		return;
+	}
+
+	kill(-fore_pgid,SIGTERM); // Kill all processes in the foreground process group id
 }
 
 
@@ -70,7 +70,7 @@ int main(int argc, char* argv[]) {
 	char  **tokens;              
 	int i;
 
-    signal(SIGINT,signal_handler); // Setting signal handler
+	signal(SIGINT,signal_handler); // Setting signal handler
 
 
 	while(1) {			
@@ -86,31 +86,31 @@ int main(int argc, char* argv[]) {
 
 		tokens = tokenize(line);
 
-        if(tokens[0] && !strcmp(tokens[0],"exit") && !tokens[1]){
+		if(tokens[0] && !strcmp(tokens[0],"exit") && !tokens[1]){
 
-            // If first token is exit, and 2nd is NULL then free memory
-            free_mem(tokens);
+			// If first token is exit, and 2nd is NULL then free memory
+			free_mem(tokens);
 
 			if(fore_pgid!=-1){
-	            kill(-fore_pgid,SIGINT); // Kill foreground processes
+				kill(-fore_pgid,SIGINT); // Kill foreground processes
 			}
 			if(back_pgid!=-1){
-	            kill(-back_pgid,SIGINT); // Kill background processes
+				kill(-back_pgid,SIGINT); // Kill background processes
 			}
-            kill(-getpid(),SIGTERM); // Kill original process
-            exit(0);
-        }
+			kill(-getpid(),SIGTERM); // Kill original process
+			exit(0);
+		}
 
 		// Reap any terminated background processes without waiting for them
 
 		int check;
 
 		while(check = waitpid(-1,NULL,WNOHANG)>0){
-			
+
 			// If any process terminated, print message
 			printf("Shell : Background Process Finished\n");
-            // Decrement number of background processes
-            back_num--;
+			// Decrement number of background processes
+			back_num--;
 		}
 
 		// When no background process, set to background pgid to -1.
@@ -119,11 +119,11 @@ int main(int argc, char* argv[]) {
 
 			back_pgid=-1;
 		}
-		
+
 		// If empty, restart shell
 		if(!tokens[0]){
-            free_mem(tokens);
-			
+			free_mem(tokens);
+
 			continue;
 		}
 
@@ -151,17 +151,17 @@ int main(int argc, char* argv[]) {
 
 		if(background==-2){
 			// If background is not last argument, error
-            free_mem(tokens);
+			free_mem(tokens);
 
 			continue;
 		}
-   
+
 		if(strcmp(tokens[0],"cd")){
-			
+
 			// Treat cd commands differently
 			// Use strcmp to compare strings since normal comparision wouldn't work as "cd" and tokens[0] 
 			// have different sizes
-			
+
 
 			// If background process, increment number of background processes by 1
 			if(background>0){
@@ -182,13 +182,13 @@ int main(int argc, char* argv[]) {
 					if(back_num==1){
 						setpgid(0,0);
 					}else{
-	                    setpgid(0,back_pgid);
+						setpgid(0,back_pgid);
 					}
 				}else{
-					
+
 					// If foreground process, set pgid to pid of new process
-                    setpgid(0,0);
-                }
+					setpgid(0,0);
+				}
 				execvp(tokens[0],tokens);
 				// Fork copies the heap memory as well, so this is memory safe
 				printf("Shell: Incorrect Command : %s\n",tokens[0]);
@@ -199,15 +199,15 @@ int main(int argc, char* argv[]) {
 				if(background==-1){
 					// Wait for only the process that was just forked
 					// Update value of foreground pgid
-                    fore_pgid=pid;
-                    waitpid(pid,NULL,0);
+					fore_pgid=pid;
+					waitpid(pid,NULL,0);
 				}else if(back_num==1){
 
 					// If first background process, update value of background pgid
 					back_pgid=pid;
 				}
 				// No foreground process anymore, so change foreground pid to -1
-                fore_pgid=-1;
+				fore_pgid=-1;
 			}
 		}else{
 
@@ -236,7 +236,7 @@ int main(int argc, char* argv[]) {
 				}
 			}
 		}
-       
+
 		// Freeing the allocated memory	
 		free_mem(tokens);
 	}

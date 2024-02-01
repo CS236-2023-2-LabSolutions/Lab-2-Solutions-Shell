@@ -16,33 +16,33 @@
 #define MAX_NUM_TOKENS 64
 
 /* Splits the string by space and returns the array of tokens
-*
-*/
+ *
+ */
 char **tokenize(char *line)
 {
-  char **tokens = (char **)malloc(MAX_NUM_TOKENS * sizeof(char *));
-  char *token = (char *)malloc(MAX_TOKEN_SIZE * sizeof(char));
-  int i, tokenIndex = 0, tokenNo = 0;
+	char **tokens = (char **)malloc(MAX_NUM_TOKENS * sizeof(char *));
+	char *token = (char *)malloc(MAX_TOKEN_SIZE * sizeof(char));
+	int i, tokenIndex = 0, tokenNo = 0;
 
-  for(i =0; i < strlen(line); i++){
+	for(i =0; i < strlen(line); i++){
 
-    char readChar = line[i];
+		char readChar = line[i];
 
-    if (readChar == ' ' || readChar == '\n' || readChar == '\t'){
-      token[tokenIndex] = '\0';
-      if (tokenIndex != 0){
-	tokens[tokenNo] = (char*)malloc(MAX_TOKEN_SIZE*sizeof(char));
-	strcpy(tokens[tokenNo++], token);
-	tokenIndex = 0; 
-      }
-    } else {
-      token[tokenIndex++] = readChar;
-    }
-  }
- 
-  free(token);
-  tokens[tokenNo] = NULL ;
-  return tokens;
+		if (readChar == ' ' || readChar == '\n' || readChar == '\t'){
+			token[tokenIndex] = '\0';
+			if (tokenIndex != 0){
+				tokens[tokenNo] = (char*)malloc(MAX_TOKEN_SIZE*sizeof(char));
+				strcpy(tokens[tokenNo++], token);
+				tokenIndex = 0; 
+			}
+		} else {
+			token[tokenIndex++] = readChar;
+		}
+	}
+
+	free(token);
+	tokens[tokenNo] = NULL ;
+	return tokens;
 }
 
 
@@ -107,7 +107,7 @@ int main(int argc, char* argv[]) {
 
 		line[strlen(line)] = '\n'; //terminate with new line
 		tokens = tokenize(line);
-   
+
 		int toklen = 0;
 		int frgd_seq = 0;
 		int frgd_par = 0;
@@ -160,7 +160,7 @@ int main(int argc, char* argv[]) {
 				if(ret < 0){
 					printf("Shell: Incorrect command\n");
 					tokfree(tokens);
-					}
+				}
 				return 0;
 			}
 			else{
@@ -284,7 +284,7 @@ int main(int argc, char* argv[]) {
 		}
 
 		// Freeing the allocated memory	
-	
+
 		tokfree(tokens);
 
 	}

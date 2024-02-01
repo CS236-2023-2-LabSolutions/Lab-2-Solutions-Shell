@@ -5,7 +5,7 @@
 #include <unistd.h>
 
 int main(){
-    char* args[] = {"ls", "-l", NULL};
-    execvp(args[0], args);
-    printf("not expected\n");
+	char* args[] = {"ls", "-l", NULL};
+	execvp(args[0], args);
+	printf("not expected\n");
 }
